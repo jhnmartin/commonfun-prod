@@ -33,13 +33,7 @@ const user = useSupabaseUser();
 <template>
   <UApp>
     <NuxtLayout>
-      <UMain>
-        <NuxtPage />
-      </UMain>
-      <UseGeolocation>
-        {{ coords }}
-      </UseGeolocation>
-      <pre>Is User: {{ user }}</pre>
+      <NuxtPage />
       <USeparator />
     </NuxtLayout>
   </UApp>
