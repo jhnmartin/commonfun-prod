@@ -14,20 +14,20 @@ export default defineNuxtConfig({
 
   compatibilityDate: "2025-01-15",
 
-  supabase: {
-    redirectOptions: {
-      login: "/login",
-      callback: "/confirm",
-      include: ["/dashboard(/*)?"],
-    },
-  },
-
   eslint: {
     config: {
       stylistic: {
         commaDangle: "never",
         braceStyle: "1tbs",
       },
+    },
+  },
+
+  supabase: {
+    redirectOptions: {
+      login: "/login",
+      callback: "/confirm",
+      include: ["/dashboard(/*)?"],
     },
   },
 });

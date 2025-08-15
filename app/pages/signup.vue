@@ -11,6 +11,7 @@ useSeoMeta({
   description: "Create an account to get started",
 });
 
+const supabase = useSupabaseClient();
 const toast = useToast();
 
 const fields = [
@@ -43,8 +44,8 @@ const providers = [
     },
   },
   {
-    label: "GitHub",
-    icon: "i-simple-icons-github",
+    label: "Apple",
+    icon: "i-simple-icons-apple",
     onClick: () => {
       toast.add({ title: "GitHub", description: "Login with GitHub" });
     },
@@ -59,8 +60,12 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>;
 
-function onSubmit(payload: FormSubmitEvent<Schema>) {
+async function onSubmit(payload: FormSubmitEvent<Schema>) {
   console.log("Submitted", payload);
+  const { data, error } = await supabase.auth.signUp({
+    email: payload.data.email,
+    password: payload.data.password,
+  });
 }
 </script>
 
