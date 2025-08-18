@@ -7,6 +7,16 @@ export default defineNuxtConfig({
   },
 
   css: ["~/assets/css/main.css"],
+  runtimeConfig: {
+    public: {
+      posthogPublicKey:
+        process.env.NUXT_PUBLIC_POSTHOG_KEY ||
+        "phc_3qrHlRg1xnc90W77VDvJoBm3kvxdPD8x5ucdaUKupAM",
+      posthogHost:
+        process.env.NUXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
+      posthogDefaults: "2025-05-24",
+    },
+  },
 
   routeRules: {
     "/": { prerender: true },

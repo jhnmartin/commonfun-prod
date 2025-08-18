@@ -26,8 +26,11 @@ useSeoMeta({
   twitterCard: "summary_large_image",
 });
 
-const { coords } = useGeolocation();
-const user = useSupabaseUser();
+const { $posthog } = useNuxtApp();
+if ($posthog) {
+  const posthog = $posthog();
+  posthog.capture("<event_name>");
+}
 </script>
 
 <template>
