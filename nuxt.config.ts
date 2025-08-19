@@ -1,6 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ["@nuxt/eslint", "@nuxt/ui-pro", "@vueuse/nuxt", "@nuxtjs/supabase"],
+  modules: [
+    "@nuxt/eslint",
+    "@nuxt/ui-pro",
+    "@vueuse/nuxt",
+    "@nuxtjs/supabase",
+    "nuxt-resend",
+  ],
 
   devtools: {
     enabled: true,
@@ -8,6 +14,9 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/main.css"],
   runtimeConfig: {
+    resend: {
+      apiKey: process.env.NUXT_RESEND_API_KEY,
+    },
     public: {
       posthogPublicKey:
         process.env.NUXT_PUBLIC_POSTHOG_KEY ||

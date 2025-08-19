@@ -70,6 +70,9 @@ const links = [
           class="mt-auto"
         />
       </template>
+      <template #footer="{ collapsed }">
+        <UserMenu :collapsed="collapsed" />
+      </template>
     </UDashboardSidebar>
 
     <UDashboardSearch :groups="groups" />

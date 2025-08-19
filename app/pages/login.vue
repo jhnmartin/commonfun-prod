@@ -63,10 +63,17 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
   const { data, error } = await supabase.auth.signInWithPassword({
     email: payload.data.email,
     password: payload.data.password,
+    options: {
+      // Set rememberMe based on the checkbox value
+      rememberMe: payload.data.remember || false,
+    },
   });
 
   if (error) {
     toast.add({ title: "Error", description: error.message });
+  } else if (data.user) {
+    // Redirect to confirm page on successful login
+    await navigateTo("/confirm");
   }
 }
 </script>

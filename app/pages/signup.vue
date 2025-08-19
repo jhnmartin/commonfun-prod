@@ -61,11 +61,31 @@ const schema = z.object({
 type Schema = z.output<typeof schema>;
 
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
-  console.log("Submitted", payload);
-  const { data, error } = await supabase.auth.signUp({
-    email: payload.data.email,
-    password: payload.data.password,
-  });
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email: payload.data.email,
+      password: payload.data.password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/confirm`,
+      },
+    });
+    if (error) {
+      toast.add({ title: "Error", description: error.message });
+    } else if (data.user && !data.session) {
+      // User signed up but needs email confirmation
+      toast.add({
+        title: "Check your email",
+        description: "We sent you a confirmation link to verify your account",
+      });
+      // Optionally redirect to a "check email" page
+      await navigateTo("/confirm");
+    } else if (data.session) {
+      // User is already confirmed and has a session
+      await navigateTo("/dashboard");
+    }
+  } catch (err) {
+    toast.add({ title: "Error", description: "An unexpected error occurred" });
+  }
 }
 </script>
 
