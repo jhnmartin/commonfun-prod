@@ -1,22 +1,4 @@
 <script setup lang="ts">
-const user = useSupabaseUser();
-const toast = useToast();
-
-// Add error handling for the composable
-let createCheckoutSession: any = null;
-try {
-  const stripe = useStripe();
-  createCheckoutSession = stripe.createCheckoutSession;
-} catch (error) {
-  console.error("Error loading useStripe composable:", error);
-  toast.add({
-    title: "Error",
-    description:
-      "Failed to load Stripe functionality. Please refresh the page.",
-    color: "red",
-  });
-}
-
 // Stripe price IDs - you'll need to create these in your Stripe dashboard
 const plans = ref([
   {
@@ -26,7 +8,6 @@ const plans = ref([
     features: ["One Organization", "Unlimited Events"],
     button: {
       label: "Get Started",
-      action: "signup",
     },
   },
   {
@@ -46,7 +27,6 @@ const plans = ref([
     ],
     button: {
       label: "Subscribe Now",
-      action: "subscribe",
     },
   },
   {
@@ -58,85 +38,9 @@ const plans = ref([
     features: ["Up to 20 developers", "Everything in Startup"],
     button: {
       label: "Subscribe Now",
-      action: "subscribe",
     },
   },
 ]);
-
-const handleButtonClick = async (plan: {
-  button: { action: string };
-  priceId?: string;
-  title: string;
-}) => {
-  if (plan.button.action === "subscribe") {
-    if (!user.value) {
-      // Redirect to login if not authenticated
-      toast.add({
-        title: "Authentication Required",
-        description: "Please log in to subscribe to a plan",
-        color: "blue",
-      });
-      await navigateTo("/login");
-      return;
-    }
-
-    // Check if Stripe is loaded
-    if (!createCheckoutSession) {
-      toast.add({
-        title: "Error",
-        description:
-          "Stripe functionality not available. Please refresh the page.",
-        color: "red",
-      });
-      return;
-    }
-
-    // Create Stripe checkout session
-    if (plan.priceId) {
-      try {
-        await createCheckoutSession(plan.priceId, plan.title);
-      } catch (error) {
-        console.error("Error creating checkout session:", error);
-        toast.add({
-          title: "Error",
-          description: "Failed to create checkout session. Please try again.",
-          color: "red",
-        });
-      }
-    } else {
-      toast.add({
-        title: "Error",
-        description: "Price ID not configured for this plan",
-        color: "red",
-      });
-    }
-  } else if (plan.button.action === "signup") {
-    if (!user.value) {
-      await navigateTo("/signup");
-    } else {
-      await navigateTo("/dashboard");
-    }
-  }
-};
-
-// Check for success/cancel messages from Stripe
-const route = useRoute();
-onMounted(() => {
-  if (route.query.success === "true") {
-    toast.add({
-      title: "Welcome to Commonfun!",
-      description: "Your subscription has been activated successfully.",
-      color: "green",
-    });
-  } else if (route.query.canceled === "true") {
-    toast.add({
-      title: "Subscription Canceled",
-      description:
-        "Your subscription was not completed. You can try again anytime.",
-      color: "yellow",
-    });
-  }
-});
 </script>
 
 <template>
@@ -144,31 +48,7 @@ onMounted(() => {
     title="Join Commonfun for free today!"
     description="Flexible subscriptions for individuals and teams. Use Commonfun to start, grow and scale your brand."
   >
-    <div class="space-y-8">
-      <!-- Authentication Notice -->
-      <div
-        v-if="!user"
-        class="bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800 rounded-lg p-4"
-      >
-        <div class="flex items-center gap-3">
-          <UIcon
-            name="i-lucide-info"
-            class="text-blue-600 dark:text-blue-400"
-          />
-          <div>
-            <p class="text-sm font-medium text-blue-900 dark:text-blue-100">
-              Sign up or log in to subscribe
-            </p>
-            <p class="text-sm text-blue-700 dark:text-blue-300">
-              You need an account to access paid features and manage your
-              subscription.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Pricing Plans -->
-      <UPricingPlans :plans="plans" @button-click="handleButtonClick" />
-    </div>
+    <!-- Pricing Plans -->
+    <UPricingPlans :plans="plans" @button-click="handleButtonClick" />
   </UPageSection>
 </template>
