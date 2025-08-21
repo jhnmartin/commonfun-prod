@@ -17,6 +17,9 @@ export default defineNuxtConfig({
     resend: {
       apiKey: process.env.NUXT_RESEND_API_KEY,
     },
+    stripe: {
+      secretKey: process.env.STRIPE_SECRET_KEY,
+    },
     public: {
       posthogPublicKey:
         process.env.NUXT_PUBLIC_POSTHOG_KEY ||
@@ -24,6 +27,7 @@ export default defineNuxtConfig({
       posthogHost:
         process.env.NUXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
       posthogDefaults: "2025-05-24",
+      stripePublishableKey: process.env.STRIPE_PUBLIC_KEY,
     },
   },
 
