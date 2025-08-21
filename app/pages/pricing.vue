@@ -1,7 +1,21 @@
 <script setup lang="ts">
 const user = useSupabaseUser();
-const { createCheckoutSession } = useStripe();
 const toast = useToast();
+
+// Add error handling for the composable
+let createCheckoutSession: any = null;
+try {
+  const stripe = useStripe();
+  createCheckoutSession = stripe.createCheckoutSession;
+} catch (error) {
+  console.error("Error loading useStripe composable:", error);
+  toast.add({
+    title: "Error",
+    description:
+      "Failed to load Stripe functionality. Please refresh the page.",
+    color: "red",
+  });
+}
 
 // Stripe price IDs - you'll need to create these in your Stripe dashboard
 const plans = ref([
@@ -66,9 +80,29 @@ const handleButtonClick = async (plan: {
       return;
     }
 
+    // Check if Stripe is loaded
+    if (!createCheckoutSession) {
+      toast.add({
+        title: "Error",
+        description:
+          "Stripe functionality not available. Please refresh the page.",
+        color: "red",
+      });
+      return;
+    }
+
     // Create Stripe checkout session
     if (plan.priceId) {
-      await createCheckoutSession(plan.priceId, plan.title);
+      try {
+        await createCheckoutSession(plan.priceId, plan.title);
+      } catch (error) {
+        console.error("Error creating checkout session:", error);
+        toast.add({
+          title: "Error",
+          description: "Failed to create checkout session. Please try again.",
+          color: "red",
+        });
+      }
     } else {
       toast.add({
         title: "Error",
