@@ -54,6 +54,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
     {
       label: "Billing",
       icon: "i-lucide-credit-card",
+      to: "/dashboard/billing",
     },
     {
       label: "Settings",
